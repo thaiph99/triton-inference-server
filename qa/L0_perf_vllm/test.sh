@@ -53,13 +53,13 @@ echo '{
     "data": [
         {
             "text_input": [
-                "hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi"
+                "hi hi hi hi hi hi hi hi hi hi"
             ],
             "stream": [
                 true
             ],
             "sampling_parameters": [
-                "{\"max_tokens\": 1, \"ignore_eos\": false}"
+                "{\"max_tokens\": 1024, \"ignore_eos\": true}"
             ]
         }
     ]
@@ -67,17 +67,18 @@ echo '{
 
 RET=0
 ARCH="amd64"
-CONCURRENCY=1
-STATIC_BATCH=0
+STATIC_BATCH=1
 INSTANCE_CNT=1
+REQUEST_PERIOD=32
+CONCURRENCY="1:100:1"
 MODEL_FRAMEWORK="vllm"
 MEASUREMENT_WINDOW=5000
 PERF_CLIENT_PROTOCOL="grpc"
 PERF_CLIENT=perf_analyzer
 
-PERF_CLIENT_ARGS="-v -m $MODEL_NAME -i grpc --async --streaming --input-data=$INPUT_DATA --stability-percentage=999 \
-                  --profile-export-file=$EXPORT_FILE --measurement-mode=count_windows --measurement-request-count=10 \
-                  -p${MEASUREMENT_WINDOW} --concurrency-range ${CONCURRENCY}"
+PERF_CLIENT_ARGS="-v -m $MODEL_NAME -i grpc --async --streaming --input-data=$INPUT_DATA --profile-export-file=$EXPORT_FILE \
+                   --periodic-concurrency-range ${CONCURRENCY} --request-period ${REQUEST_PERIOD} -p${MEASUREMENT_WINDOW}"
+
 
 run_server
 if (( $SERVER_PID == 0 )); then
@@ -97,7 +98,7 @@ echo -e "\"s_server\":\"triton\"," >> ${NAME}.tjson
 echo -e "\"s_protocol\":\"${PERF_CLIENT_PROTOCOL}\"," >> ${NAME}.tjson
 echo -e "\"s_framework\":\"${MODEL_FRAMEWORK}\"," >> ${NAME}.tjson
 echo -e "\"s_model\":\"${MODEL_NAME}\"," >> ${NAME}.tjson
-echo -e "\"l_concurrency\":${CONCURRENCY}," >> ${NAME}.tjson
+echo -e "\"l_concurrency\":\"${CONCURRENCY}\"," >> ${NAME}.tjson
 echo -e "\"l_batch_size\":${STATIC_BATCH}," >> ${NAME}.tjson
 echo -e "\"l_instance_count\":${INSTANCE_CNT}," >> ${NAME}.tjson
 echo -e "\"s_architecture\":\"${ARCH}\"}]" >> ${NAME}.tjson
