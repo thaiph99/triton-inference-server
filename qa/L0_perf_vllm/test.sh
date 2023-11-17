@@ -93,6 +93,7 @@ set +o pipefail
 set -e
 
 echo -e "[{\"s_benchmark_kind\":\"benchmark_perf\"," >> ${NAME}.tjson
+echo -e "\"s_benchmark_repo_branch\":\"${BENCHMARK_REPO_BRANCH}\"," >> ${NAME}.tjson
 echo -e "\"s_benchmark_name\":\"${NAME}\"," >> ${NAME}.tjson
 echo -e "\"s_server\":\"triton\"," >> ${NAME}.tjson
 echo -e "\"s_protocol\":\"${PERF_CLIENT_PROTOCOL}\"," >> ${NAME}.tjson
