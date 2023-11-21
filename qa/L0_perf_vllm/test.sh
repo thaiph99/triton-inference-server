@@ -44,7 +44,7 @@ export CUDA_VISIBLE_DEVICES=0
 EXPORT_FILE=profile-export-vllm-model.json
 
 pip3 install tritonclient
-rm -rf models $EXPORT_FILE *tjson
+rm -rf $MODEL_REPO $EXPORT_FILE *.tjson *.json *.csv
 
 mkdir -p $MODEL_REPO/$MODEL_NAME/1
 wget -P $MODEL_REPO/$MODEL_NAME/1 https://raw.githubusercontent.com/triton-inference-server/vllm_backend/main/samples/model_repository/vllm_model/1/model.json
@@ -74,8 +74,8 @@ MODEL_FRAMEWORK="vllm"
 PERF_CLIENT_PROTOCOL="grpc"
 PERF_CLIENT=perf_analyzer
 
-PERF_CLIENT_ARGS="-v -m $MODEL_NAME -i $PERF_CLIENT_PROTOCOL --async --streaming --input-data=$INPUT_DATA --profile-export-file=$EXPORT_FILE \
-                  --stability-percentage=999 --concurrency-range=${CONCURRENCY} --measurement-mode=count_windows --measurement-request-count=10"
+PERF_CLIENT_ARGS="-v -m $MODEL_NAME --concurrency-range=${CONCURRENCY} --measurement-mode=count_windows --measurement-request-count=10 \
+                  --input-data=$INPUT_DATA --profile-export-file=$EXPORT_FILE -i $PERF_CLIENT_PROTOCOL --async --streaming --stability-percentage=999"
 
 run_server
 if (( $SERVER_PID == 0 )); then
