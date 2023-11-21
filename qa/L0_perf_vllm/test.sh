@@ -43,7 +43,7 @@ SERVER_ARGS="--model-repository=${MODEL_REPO} --backend-directory=${BACKEND_DIR}
 export CUDA_VISIBLE_DEVICES=0
 EXPORT_FILE=profile-export-vllm-model.json
 
-pip3 install tritonclient[all]
+pip3 install tritonclient
 rm -rf models $EXPORT_FILE *tjson
 
 mkdir -p $MODEL_REPO/$MODEL_NAME/1
@@ -70,7 +70,7 @@ ARCH="amd64"
 STATIC_BATCH=1
 INSTANCE_CNT=1
 REQUEST_PERIOD=32
-CONCURRENCY="1:100:1"
+CONCURRENCY="10:100:10"
 MODEL_FRAMEWORK="vllm"
 MEASUREMENT_WINDOW=5000
 PERF_CLIENT_PROTOCOL="grpc"
