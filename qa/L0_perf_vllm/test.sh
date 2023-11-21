@@ -69,16 +69,13 @@ RET=0
 ARCH="amd64"
 STATIC_BATCH=1
 INSTANCE_CNT=1
-REQUEST_PERIOD=32
 CONCURRENCY="10:100:10"
 MODEL_FRAMEWORK="vllm"
-MEASUREMENT_WINDOW=5000
 PERF_CLIENT_PROTOCOL="grpc"
 PERF_CLIENT=perf_analyzer
 
-PERF_CLIENT_ARGS="-v -m $MODEL_NAME -i grpc --async --streaming --input-data=$INPUT_DATA --profile-export-file=$EXPORT_FILE \
-                   --periodic-concurrency-range ${CONCURRENCY} --request-period ${REQUEST_PERIOD} -p${MEASUREMENT_WINDOW}"
-
+PERF_CLIENT_ARGS="-v -m $MODEL_NAME -i $PERF_CLIENT_PROTOCOL --async --streaming --input-data=$INPUT_DATA --profile-export-file=$EXPORT_FILE \
+                  --stability-percentage=999 --concurrency-range=${CONCURRENCY} --measurement-mode=count_windows"
 
 run_server
 if (( $SERVER_PID == 0 )); then
