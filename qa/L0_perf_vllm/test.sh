@@ -32,10 +32,10 @@ TRITON_DIR=${TRITON_DIR:="/opt/tritonserver"}
 SERVER=${TRITON_DIR}/bin/tritonserver
 BACKEND_DIR=${TRITON_DIR}/backends
 MODEL_REPO="${PWD}/models"
-NAME="vllm_perf_test"
+NAME="vllm_benchmarking_test"
 MODEL_NAME="vllm_model"
 INPUT_DATA="./input_data.json"
-SERVER_LOG="${NAME}.server.log"
+SERVER_LOG="${NAME}_server.log"
 SERVER_ARGS="--model-repository=${MODEL_REPO} --backend-directory=${BACKEND_DIR} --log-verbose=1"
 
 # Select the single GPU that will be available to the inference
@@ -88,7 +88,7 @@ if (( $SERVER_PID == 0 )); then
 fi
 
 set +e
-$PERF_CLIENT $PERF_CLIENT_ARGS -f ${NAME}.csv 2>&1 | tee ${NAME}.log
+$PERF_CLIENT $PERF_CLIENT_ARGS -f ${NAME}.csv 2>&1 | tee ${NAME}_perf_analyzer.log
 set +o pipefail
 set -e
 
