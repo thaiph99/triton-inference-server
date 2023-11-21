@@ -75,7 +75,7 @@ PERF_CLIENT_PROTOCOL="grpc"
 PERF_CLIENT=perf_analyzer
 
 PERF_CLIENT_ARGS="-v -m $MODEL_NAME -i $PERF_CLIENT_PROTOCOL --async --streaming --input-data=$INPUT_DATA --profile-export-file=$EXPORT_FILE \
-                  --stability-percentage=999 --concurrency-range=${CONCURRENCY} --measurement-mode=count_windows"
+                  --stability-percentage=999 --concurrency-range=${CONCURRENCY} --measurement-mode=count_windows --measurement-request-count=10"
 
 run_server
 if (( $SERVER_PID == 0 )); then
