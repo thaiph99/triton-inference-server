@@ -99,6 +99,17 @@ struct RequestReleasePayload final {
   std::shared_ptr<TRITONSERVER_InferenceRequest> inference_request_ = nullptr;
 };
 
+// Simple structure that carries the userp payload needed for
+// request release callback.
+struct RequestReleasePayload final {
+  explicit RequestReleasePayload(
+      const std::shared_ptr<TRITONSERVER_InferenceRequest>& inference_request)
+      : inference_request_(inference_request){};
+
+ private:
+  std::shared_ptr<TRITONSERVER_InferenceRequest> inference_request_ = nullptr;
+};
+
 //
 // ResponseQueue
 //
@@ -726,8 +737,7 @@ class InferHandlerState {
     // Inserts the state to a set tracking active requests
     // within the server core. Should only be called when
     // the request was successfully enqueued on Triton.
-    void InsertInflightState(
-        InferHandlerStateType* state)
+    void InsertInflightState(InferHandlerStateType* state)
     {
       std::lock_guard<std::recursive_mutex> lock(mu_);
       inflight_states_.insert(state);
@@ -764,7 +774,8 @@ class InferHandlerState {
             // Assuming if RequestComplete callback is run asynchronously
             // before this point.
             TRITONSERVER_Error* err = nullptr;
-            err = TRITONSERVER_InferenceRequestCancel(state->inference_request_.get());
+            err = TRITONSERVER_InferenceRequestCancel(
+                state->inference_request_.get());
             // TODO: Add request id to the message
             if (err != nullptr) {
               LOG_INFO << "Failed to cancel the request: "
@@ -1048,6 +1059,7 @@ class InferHandlerState {
   {
     context_ = nullptr;
     inference_request_.reset();
+    inference_request_.reset();
     ClearTraceTimestamps();
   }
 
@@ -1083,6 +1095,10 @@ class InferHandlerState {
   Steps step_;
   std::recursive_mutex step_mtx_;
 
+  // Shared pointer to the inference request object. The lifetime of
+  // inference request object is extended till all the responses from
+  // the request are processed and the request is released.
+  std::shared_ptr<TRITONSERVER_InferenceRequest> inference_request_;
   // Shared pointer to the inference request object. The lifetime of
   // inference request object is extended till all the responses from
   // the request are processed and the request is released.

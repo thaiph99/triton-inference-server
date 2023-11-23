@@ -868,6 +868,12 @@ ModelInferHandler::Execute(InferHandler::State* state)
   }
 
   if (err == nullptr) {
+    state->inference_request_ = {
+        irequest, [](TRITONSERVER_InferenceRequest* request) {
+          LOG_TRITONSERVER_ERROR(
+              TRITONSERVER_InferenceRequestDelete(request),
+              "deleting gRPC inference request");
+        }};
     err = SetInferenceRequestMetadata(irequest, request, state->parameters_);
   }
 
@@ -940,10 +946,6 @@ ModelInferHandler::Execute(InferHandler::State* state)
     // If error go immediately to COMPLETE.
     LOG_VERBOSE(1) << "[request id: " << request_id << "] "
                    << "Infer failed: " << TRITONSERVER_ErrorMessage(err);
-
-    LOG_TRITONSERVER_ERROR(
-        TRITONSERVER_InferenceRequestDelete(irequest),
-        "deleting GRPC inference request");
 
     ::grpc::Status status;
     GrpcStatusUtil::Create(&status, err);
