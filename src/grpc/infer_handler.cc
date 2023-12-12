@@ -717,6 +717,13 @@ ModelInferHandler::Process(InferHandler::State* state, bool rpc_ok)
       StartNewRequest();
     }
 
+#ifdef TRITON_ENABLE_TRACING
+    // Can't create trace as we don't know the model to be requested,
+    // track timestamps in 'state'
+    state->trace_timestamps_.emplace_back(
+        std::make_pair("GRPC_WAITREAD_END", TraceManager::CaptureTimestamp()));
+#endif  // TRITON_ENABLE_TRACING
+
     if (ExecutePrecondition(state)) {
       Execute(state);
     } else {
@@ -725,12 +732,6 @@ ModelInferHandler::Process(InferHandler::State* state, bool rpc_ok)
           std::string("This protocol is restricted, expecting header '") +
               restricted_kv_.first + "'");
 
-#ifdef TRITON_ENABLE_TRACING
-      // Can't create trace as we don't know the model to be requested,
-      // track timestamps in 'state'
-      state->trace_timestamps_.emplace_back(std::make_pair(
-          "GRPC_WAITREAD_END", TraceManager::CaptureTimestamp()));
-#endif  // TRITON_ENABLE_TRACING
 
 #ifdef TRITON_ENABLE_TRACING
       state->trace_timestamps_.emplace_back(
