@@ -660,7 +660,7 @@ ModelInferHandler::StartNewRequest(bool addTrace = false)
   context->SetCompressionLevel(compression_level_);
   State* state = StateNew(tritonserver_.get(), context);
 
-  if addTrace {
+  if (addTrace) {
 #ifdef TRITON_ENABLE_TRACING
     // Can't create trace as we don't know the model to be requested,
     // track timestamps in 'state'

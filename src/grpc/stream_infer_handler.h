@@ -105,7 +105,7 @@ class ModelStreamInferHandler
   }
 
  protected:
-  void StartNewRequest(bool addTrace=false) override;
+  void StartNewRequest(bool addTrace) override;
   bool Process(State* state, bool rpc_ok) override;
 
  private:

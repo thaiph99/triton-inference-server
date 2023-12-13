@@ -1205,7 +1205,7 @@ class InferHandler : public HandlerBase {
     delete state;
   }
 
-  virtual void StartNewRequest(bool addTrace=false) = 0;
+  virtual void StartNewRequest(bool addTrace) = 0;
   virtual bool Process(State* state, bool rpc_ok) = 0;
   bool ExecutePrecondition(InferHandler::State* state);
 
@@ -1417,7 +1417,7 @@ class ModelInferHandler
   }
 
  protected:
-  void StartNewRequest(bool addTrace=false) override;
+  void StartNewRequest(bool addTrace) override;
   bool Process(State* state, bool rpc_ok) override;
 
  private:
