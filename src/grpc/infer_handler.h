@@ -1303,6 +1303,18 @@ InferHandler<
                        << state->unique_id_ << ", " << state->step_;
       }
     }
+
+    for (const auto& entry : state->trace_timestamps_) {
+      const std::string& event = entry.first;
+      uint64_t id = entry.second;
+
+      if (entry.first == "GRPC_WAITREAD_START" ||
+          entry.first == "GRPC_WAITREAD_END") {
+        LOG_INFO << "*\n#######################################################"
+                    "######################################\n\n*******\n"
+                 << entry.first << " : " << entry.second << "\n********\n\n";
+      }
+    }
   }));
 
   barrier->Wait();
