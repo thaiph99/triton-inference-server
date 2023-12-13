@@ -654,19 +654,21 @@ InferRequestComplete(
 //===========================================================================
 
 void
-ModelInferHandler::StartNewRequest()
+ModelInferHandler::StartNewRequest(bool addTrace = false)
 {
   auto context = std::make_shared<State::Context>(cq_);
   context->SetCompressionLevel(compression_level_);
   State* state = StateNew(tritonserver_.get(), context);
 
+  if addTrace {
 #ifdef TRITON_ENABLE_TRACING
-  // Can't create trace as we don't know the model to be requested,
-  // track timestamps in 'state'
-  state->trace_timestamps_.emplace_back(
-      std::make_pair("GRPC_WAITREAD_START", TraceManager::CaptureTimestamp()));
+    // Can't create trace as we don't know the model to be requested,
+    // track timestamps in 'state'
+    state->trace_timestamps_.emplace_back(std::make_pair(
+        "GRPC_WAITREAD_START", TraceManager::CaptureTimestamp()));
+        LOG_INFO << "*\n********\nGRPC_WAITREAD_START captured: '" << TraceManager::CaptureTimestamp() << "\n********\n\n";
 #endif  // TRITON_ENABLE_TRACING
-
+  }
   service_->RequestModelInfer(
       state->context_->ctx_.get(), &state->request_,
       state->context_->responder_.get(), cq_, cq_, state);
@@ -712,17 +714,18 @@ ModelInferHandler::Process(InferHandler::State* state, bool rpc_ok)
   }
 
   if (state->step_ == Steps::START) {
+    // Start a new request to replace this one...
+    if (!shutdown) {
+      StartNewRequest();
+    }
+
 #ifdef TRITON_ENABLE_TRACING
     // Can't create trace as we don't know the model to be requested,
     // track timestamps in 'state'
     state->trace_timestamps_.emplace_back(
         std::make_pair("GRPC_WAITREAD_END", TraceManager::CaptureTimestamp()));
+        LOG_INFO << "*\n********\nGRPC_WAITREAD_END captured: '" << TraceManager::CaptureTimestamp() << "\n********\n\n";
 #endif  // TRITON_ENABLE_TRACING
-
-    // Start a new request to replace this one...
-    if (!shutdown) {
-      StartNewRequest();
-    }
 
     if (ExecutePrecondition(state)) {
       Execute(state);

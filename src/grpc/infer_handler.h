@@ -1205,7 +1205,7 @@ class InferHandler : public HandlerBase {
     delete state;
   }
 
-  virtual void StartNewRequest() = 0;
+  virtual void StartNewRequest(bool addTrace=false) = 0;
   virtual bool Process(State* state, bool rpc_ok) = 0;
   bool ExecutePrecondition(InferHandler::State* state);
 
@@ -1277,7 +1277,7 @@ InferHandler<
   auto barrier = std::make_shared<Barrier>(2);
 
   thread_.reset(new std::thread([this, barrier] {
-    StartNewRequest();
+    StartNewRequest(true);
     barrier->Wait();
 
     void* tag;
@@ -1417,7 +1417,7 @@ class ModelInferHandler
   }
 
  protected:
-  void StartNewRequest() override;
+  void StartNewRequest(bool addTrace=false) override;
   bool Process(State* state, bool rpc_ok) override;
 
  private:

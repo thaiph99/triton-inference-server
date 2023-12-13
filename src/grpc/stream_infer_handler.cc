@@ -108,7 +108,7 @@ StreamOutputBufferAttributes(
 //=============================================================================
 
 void
-ModelStreamInferHandler::StartNewRequest()
+ModelStreamInferHandler::StartNewRequest(bool addTrace=false)
 {
   auto context = std::make_shared<State::Context>(cq_, NEXT_UNIQUE_ID);
   context->SetCompressionLevel(compression_level_);
