@@ -716,7 +716,7 @@ ModelInferHandler::Process(InferHandler::State* state, bool rpc_ok)
   if (state->step_ == Steps::START) {
     // Start a new request to replace this one...
     if (!shutdown) {
-      StartNewRequest();
+      StartNewRequest(true);
     }
 
 #ifdef TRITON_ENABLE_TRACING

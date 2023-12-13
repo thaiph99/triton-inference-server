@@ -1277,7 +1277,7 @@ InferHandler<
   auto barrier = std::make_shared<Barrier>(2);
 
   thread_.reset(new std::thread([this, barrier] {
-    StartNewRequest(true);
+    StartNewRequest();
     barrier->Wait();
 
     void* tag;
