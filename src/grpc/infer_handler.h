@@ -1305,9 +1305,6 @@ InferHandler<
     }
 
     for (const auto& entry : state->trace_timestamps_) {
-      const std::string& event = entry.first;
-      uint64_t id = entry.second;
-
       if (entry.first == "GRPC_WAITREAD_START" ||
           entry.first == "GRPC_WAITREAD_END") {
         LOG_INFO << "*\n#######################################################"
