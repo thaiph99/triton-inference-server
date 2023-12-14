@@ -708,8 +708,8 @@ ModelInferHandler::Process(InferHandler::State* state, bool rpc_ok)
 #ifdef TRITON_ENABLE_TRACING
     state->trace_timestamps_.emplace_back(std::make_pair(
         "GRPC_WAITREAD_START", TraceManager::CaptureTimestamp()));
-    LOG_INFO << "*\n---------\nGRPC_WAITREAD_START captured"
-             << "\n---------\n\n";
+    LOG_INFO << "*\n---------\nGRPC_WAITREAD_START captured: "
+             << TraceManager::CaptureTimestamp() << "\n---------\n\n";
 #endif  // TRITON_ENABLE_TRACING
 
     // Start a new request to replace this one...
@@ -720,8 +720,8 @@ ModelInferHandler::Process(InferHandler::State* state, bool rpc_ok)
 #ifdef TRITON_ENABLE_TRACING
     state->trace_timestamps_.emplace_back(
         std::make_pair("GRPC_WAITREAD_END", TraceManager::CaptureTimestamp()));
-    LOG_INFO << "*\n---------\nGRPC_WAITREAD_END captured"
-             << "\n---------\n\n";
+    LOG_INFO << "*\n---------\nGRPC_WAITREAD_END captured: "
+             << TraceManager::CaptureTimestamp() << "\n---------\n\n";
 #endif  // TRITON_ENABLE_TRACING
 
 
