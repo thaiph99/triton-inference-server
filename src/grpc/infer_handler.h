@@ -1305,12 +1305,12 @@ InferHandler<
       LOG_INFO << "*\n\n#######################################################"
                   "######################################\n";
 
-      for (const auto& entry : state->trace_timestamps_) {
-        if (entry.first == "GRPC_WAITREAD_START" ||
-            entry.first == "GRPC_WAITREAD_END") {
-          LOG_INFO << entry.first << " : " << entry.second << "\n";
-        }
-      }
+      //for (const auto& entry : state->trace_timestamps_) {
+      //  if (entry.first == "GRPC_WAITREAD_START" ||
+      //      entry.first == "GRPC_WAITREAD_END") {
+      //    LOG_INFO << entry.first << " : " << entry.second << "\n";
+      //  }
+      //}
     }
   }));
 
